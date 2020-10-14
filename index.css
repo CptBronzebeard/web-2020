@@ -1,6 +1,7 @@
 body {
   padding-left: auto;
   padding-right: auto;
+  font-family: sans-serif;
 }
 
 h1 {
@@ -11,6 +12,7 @@ h1 {
 
 h2 {
   font-size: 32px;
+  font-weight: bold;
 }
 
 h3 {
@@ -21,9 +23,22 @@ header {
   position: relative;
 }
 
+button {
+  font-size: 12;
+background-color: #707E7C;
+border: 0;
+width: 30px;
+height: 30px;
+border-radius: 30px;
+color: white;
+}
+
 #refresh {
   position: absolute;
   left: 50%;
+  width: auto;
+  background-color: #DDE2E1;
+  color: black;
   transform: translate(-50%, 0);
   align-self: center;
 }
@@ -52,6 +67,7 @@ header {
   font-size: 88;
   font-weight: bold;
   float:right;
+  margin-right: 40px;
 }
 
 ul {
@@ -61,15 +77,17 @@ ul {
 
 .weather_list_name {
   font-weight: bold;
+  color: white;
 }
 .weather_list_content {
   float:right;
+  color: white;
 }
 .weather_list  li {
-  background-color: #EEEEEE;
+  background-color: #90A3A0;
   margin-top: 5px;
   margin-bottom: 5px;
-  padding: 4px;
+  padding: 10px;
 }
 
 #favorites_add, header {
@@ -89,9 +107,17 @@ ul {
   padding: 0px;
   align-items: center;
   justify-content: start;
+  gap: 20px;
 }
 #add_city {
   align-self: center;
+}
+
+#add_city > input {
+  width: 250px;
+  padding: 10px;
+  background-color: #B6C6C4;
+  border: 0;
 }
 
 .button_delete {
@@ -102,21 +128,35 @@ ul {
   font-size: 30px
 }
 
-@media all and (max-width: 750px) {
+@media all and (max-width: 1090px) {
   #weather_here, #favorites_add, #favorites{
+    display: grid;
     grid-template-columns: 1fr;
     width: 1fr;
   }
+
+  #add_city {
+    display: flex;
+    gap: 20px;
+  }
+
+  #add_city > input {
+    flex-grow: 1;
+  }
+
   #refresh {
     left:auto;
-    right: 5px;
-    transform: none;
+right: 5px;
+transform: none;
+width: 40px;
+height: 40px;
   }
   #refresh > img {
     display: block;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
   }
+
   #refresh::after {
     content: "";
   }
