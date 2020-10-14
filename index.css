@@ -1,0 +1,89 @@
+body {
+  padding-left: auto;
+  padding-right: auto;
+}
+
+h1 {
+  display: inline-block;
+  font-size: 36px;
+  font-weight: normal;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 28px;
+}
+
+header {
+  position: relative;
+}
+
+#refresh {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  align-self: center;
+}
+
+#refresh:after {
+  content: 'Обновить геолокацию';
+}
+
+#here_icon {
+  width:100px;
+  height: 100px;
+  vertical-align: top;
+}
+
+#weather_here {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 30px;
+    width: 100%;
+}
+
+#general_info > span {
+  font-size: 88;
+  font-weight: bold;
+  float:right;
+}
+
+#weather_here {
+  align-items: stretch;
+}
+
+.weather_list {
+  list-style-type: none;
+  flex-grow: 1;
+  padding: 0;
+  list-style-type: none;
+}
+
+.weather_list_name {
+  font-weight: bold;
+}
+
+.weather_list_content {
+  float:right;
+}
+
+.weather_list  li {
+  background-color: #EEEEEE;
+  margin: 5px;
+  padding: 4px;
+}
+
+@media all and (max-width: 600px) {
+  #weather_here {
+          grid-template-columns: 1fr;
+          width: 1fr;
+  }
+  #refresh {
+    left:auto;
+    right: 5px;
+    transform: none;
+  }
+}
