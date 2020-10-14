@@ -28,6 +28,10 @@ header {
   align-self: center;
 }
 
+#refresh > img {
+  display: none;
+}
+
 #refresh:after {
   content: 'Обновить геолокацию';
 }
@@ -35,14 +39,13 @@ header {
 #here_icon {
   width:100px;
   height: 100px;
-  vertical-align: top;
 }
 
-#weather_here {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 30px;
-    width: 100%;
+#weather_here, #favorites{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 30px;
+  width: 100%;
 }
 
 #general_info > span {
@@ -51,39 +54,71 @@ header {
   float:right;
 }
 
-#weather_here {
-  align-items: stretch;
-}
-
-.weather_list {
+ul {
   list-style-type: none;
-  flex-grow: 1;
   padding: 0;
-  list-style-type: none;
 }
 
 .weather_list_name {
   font-weight: bold;
 }
-
 .weather_list_content {
   float:right;
 }
-
 .weather_list  li {
   background-color: #EEEEEE;
-  margin: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   padding: 4px;
 }
 
-@media all and (max-width: 600px) {
-  #weather_here {
-          grid-template-columns: 1fr;
-          width: 1fr;
+#favorites_add, header {
+  display: inline-flex;
+  align-content: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.fav_weather_icon {
+  width: 25px;
+  height: 25px;
+}
+
+.fav_city_header {
+  display: flex;
+  padding: 0px;
+  align-items: center;
+  justify-content: start;
+}
+#add_city {
+  align-self: center;
+}
+
+.button_delete {
+  margin-left: auto;
+}
+
+.fav_city_header .temperature {
+  font-size: 30px
+}
+
+@media all and (max-width: 750px) {
+  #weather_here, #favorites_add, #favorites{
+    grid-template-columns: 1fr;
+    width: 1fr;
   }
   #refresh {
     left:auto;
     right: 5px;
     transform: none;
   }
+  #refresh > img {
+    display: block;
+    width: 25px;
+    height: 25px;
+  }
+  #refresh::after {
+    content: "";
+  }
+
 }
