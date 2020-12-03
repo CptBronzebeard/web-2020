@@ -1,8 +1,10 @@
 <html>
+
 <head>
   <link rel="stylesheet" href="index.css">
   <script type='text/javascript' src='js/main.js'></script>
 </head>
+
 <body>
   <header>
     <h1> Погода здесь </h1> <button id="refresh"><img src="resources/refresh_icon.png"></button>
@@ -23,22 +25,23 @@
     </div>
   </main>
 </body>
+
 </html>
 
 <template id="here">
-    <div id="general_info">
-      <h2></h2>
-      <img src="resources/rainy.png" id="here_icon">
-      <span id="temperature_here"> ˚C </span>
-    </div>
-    <ul class="weather_list">
-    </ul>
+  <div id="general_info">
+    <h2></h2>
+    <img src="resources/rainy.png" id="here_icon">
+    <span id="temperature_here"> ˚C </span>
+  </div>
+  <ul class="weather_list">
+  </ul>
 </template>
 
 <template id="weather_info_entry">
   <li>
-  <span class="weather_list_name"></span>
-  <span class="weather_list_content"></span>
+    <span class="weather_list_name"></span>
+    <span class="weather_list_content"></span>
   </li>
 </template>
 
@@ -56,13 +59,13 @@
 </template>
 
 <template id='loader_fav'>
-    <li class='loader'>
-        Loading...
-    </li>
+  <li class='loader'>
+    Loading...
+  </li>
 </template>
 
 <template id='loader_here'>
-    <div class='loader'>
-        Подождите, данные загружаются
-    </div>
+  <div class='loader'>
+    Подождите, данные загружаются
+  </div>
 </template>
