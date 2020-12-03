@@ -7,12 +7,14 @@ const apiKey = '3d57646fde7625f581c36b64bd01dcfe';
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&';
 
 window.onload = function() {
+    loadAll();
     btnAdd = document.querySelector('#add_city button').addEventListener('click', addCity);
-    btnRefresh = document.getElementById('refresh').addEventListener('click', loadHere);
+    btnRefresh = document.getElementById('refresh').addEventListener('click', loadAll);
 }
 
-function loadHere() {
-  //placeholder
+function loadAll() {
+  document.querySelector('#favorites ul').innerHTML = "";
+  loadFavs();
   return
 }
 
@@ -45,16 +47,24 @@ function cityInfoEntries(weather) {
 }
 
 function getDirectionByDegrees(degrees) {
-  //placeholder
-  return
+    const dirRange = 22.5;
+    const fullCircle = 360;
+    const dirs = [
+        "северный", "северо-северо-восточный", "северо-восточный", "восточно-северо-восточный",
+        "восточный", "восточно-юго-восточный", "юго-восточный", "юго-юго-восточный",
+        "южный", "юго-юго-западный", "юго-западный", "западно-юго-западный",
+        "западный", "западно-северо-западный", "северо-западный", "северо-северо-западный"];
+    if (degrees < 0 || degrees > 360) {
+      return null;
+    }
+    return dirs[Math.round(degrees/dirRange)]
 }
 
 function createCityCardFavorite(weather) {
     let card = document.getElementById('fav_city_card').content.cloneNode(true);
-    card.querySelector('li').setAttribute('city_id', weather.id);
     card.querySelector('h3').innerHTML = weather.name;
     card.querySelector('span.temperature').innerHTML = weather.main.temp + '°C';
-    card.querySelector('.fav_weather_icon').setAttribute('src', pictureUrl + weather.weather[0].icon + '@4x.png');
+    card.querySelector('.fav_weather_icon').setAttribute('src', pictureUrl + weather.weather[0].icon + '.png');
     card.querySelector('button').addEventListener('click', removeCity);
     for (item of cityInfoEntries(weather)) {
         card.querySelector('.weather_list').append(item);
@@ -65,6 +75,28 @@ function createCityCardFavorite(weather) {
 function removeCity(event) {
   //placeholder
   return
+}
+
+async function loadFavs() {
+    if (localStorage.getItem('favList') == null) {
+        return;
+    }
+    favCities = JSON.parse(localStorage.getItem('favList'));
+    for(let i = 0; i < favCities.length; i++){
+        let loader = document.getElementById('loader_fav').content.cloneNode(true);
+        document.querySelector('#favorites ul').append(loader);
+    }
+    for (let cityName of favCities) {
+        try {
+            weather = await getWeatherByName(cityName);
+        }
+        catch (err) {
+            document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
+            alert('Ошибка при загрузке информации');
+            throw err;
+        }
+        document.querySelector('#favorites ul').replaceChild(createCityCardFavorite(weather), document.querySelector('#favorites ul li.loader'));
+    }
 }
 
 async function addCity() {
@@ -85,12 +117,12 @@ async function addCity() {
         throw err;
         return;
     }
-    if (favCities.includes(weather.id)) {
+    if (favCities.includes(weather.name)) {
         document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
         alert('Такой город уже есть в списке');
         return;
     }
-    favCities.push(weather.id);
+    favCities.push(weather.name);
     localStorage.setItem('favList', JSON.stringify(favCities));
     document.querySelector('#favorites ul').replaceChild(createCityCardFavorite(weather), document.querySelector('#favorites ul li.loader'));
 }
