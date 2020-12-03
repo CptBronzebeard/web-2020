@@ -1,5 +1,5 @@
 let favCities = [];
-const defCity = 471101;
+const defCity = 'Vsevolozhsk';
 let posHere;
 
 const pictureUrl = 'http://openweathermap.org/img/wn/'
@@ -15,6 +15,7 @@ window.onload = function() {
 function loadAll() {
   document.querySelector('#favorites ul').innerHTML = "";
   loadFavs();
+  loadHere();
   return
 }
 
@@ -27,6 +28,11 @@ async function getUrl(url){
 function getWeatherByName(cityName){
     url = apiUrl + 'q=' + encodeURI(cityName) + '&appid=' + apiKey;
     return getUrl(url);
+}
+
+function getWeatherByCoords(lat, lon){
+    requestURL = apiUrl + 'lat=' + encodeURI(lat) + '&lon=' + encodeURI(lon) + '&appid=' + apiKey;
+    return getUrl(requestURL);
 }
 
 function cityInfoEntries(weather) {
@@ -60,6 +66,17 @@ function getDirectionByDegrees(degrees) {
     return dirs[Math.round(degrees/dirRange)]
 }
 
+function createCityCardHere(weather) {
+    let card = document.getElementById('here').content.cloneNode(true);
+    card.querySelector('#general_info h2').innerHTML = weather.name;
+    card.getElementById('here_icon').setAttribute('src', pictureUrl + weather.weather[0].icon + '@4x.png');
+    card.getElementById("temperature_here").insertAdjacentHTML('afterbegin', weather.main.temp);
+    for (item of cityInfoEntries(weather)) {
+        card.querySelector('.weather_list').append(item);
+    }
+    return card;
+}
+
 function createCityCardFavorite(weather) {
     let card = document.getElementById('fav_city_card').content.cloneNode(true);
     card.querySelector('h3').innerHTML = weather.name;
@@ -70,6 +87,44 @@ function createCityCardFavorite(weather) {
         card.querySelector('.weather_list').append(item);
     }
     return card;
+}
+
+async function loadHereByCoords(position) {
+    try {
+        weather = await getWeatherByCoords(position.coords.latitude, position.coords.longitude);
+    }
+    catch (err) {
+      document.getElementById('weather_here').removeChild(document.querySelector('#weather_here .loader'));
+        alert('Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.');
+        return loadHereDef();
+    }
+    document.getElementById('weather_here').replaceChild(createCityCardHere(weather), document.querySelector('#weather_here .loader'));
+}
+
+
+async function loadHereDef() {
+    try {
+        weather = await getWeatherByName(defCity);
+    }
+    catch (err) {
+      document.getElementById('weather_here').removeChild(document.querySelector('#weather_here .loader'));
+        alert('Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.');
+        throw err;
+    }
+        document.getElementById('weather_here').replaceChild(createCityCardHere(weather), document.querySelector('#weather_here .loader'));
+}
+
+async function loadHere() {
+    let divHere = document.getElementById('weather_here');
+    let loader = document.getElementById('loader_here').content.cloneNode(true);
+    divHere.innerHTML = "";
+    divHere.append(loader);
+    if (!navigator.geolocation) {
+        loadHereDef();
+    }
+    else {
+        navigator.geolocation.getCurrentPosition(loadHereByCoords, loadHereDef);
+    }
 }
 
 function removeCity(event) {
