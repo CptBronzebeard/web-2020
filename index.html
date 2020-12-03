@@ -1,6 +1,7 @@
 <html>
 <head>
   <link rel="stylesheet" href="index.css">
+  <script type='text/javascript' src='js/main.js'></script>
 </head>
 <body>
   <header>
@@ -17,6 +18,8 @@
       </div>
     </div>
     <div id="favorites">
+      <ul>
+      </ul>
     </div>
   </main>
 </body>
@@ -39,7 +42,7 @@
   </li>
 </template>
 
-<template id="favorite_city_card">
+<template id="fav_city_card">
   <li>
     <div class="fav_city_header">
       <h3></h3>
@@ -50,4 +53,10 @@
     <ul class="weather_list">
     </ul>
   </li>
+</template>
+
+<template id='loader_fav'>
+    <li class='loader'>
+        Loading...
+    </li>
 </template>
