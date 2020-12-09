@@ -24,7 +24,7 @@ header {
   position: relative;
 }
 
-button {
+button, #btn_add {
   font-size: 12;
 background-color: #707E7C;
 border: 0;
@@ -115,7 +115,7 @@ ul {
   align-self: center;
 }
 
-#add_city > input {
+#add_city > input:not(#btn_add) {
   width: 250px;
   padding: 10px;
   background-color: #B6C6C4;

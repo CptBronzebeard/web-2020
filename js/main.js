@@ -8,7 +8,7 @@ const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric&lan
 
 window.onload = function() {
   loadAll();
-  btnAdd = document.querySelector('#add_city button').addEventListener('click', addCity);
+  btnAdd = document.querySelector('#add_city').addEventListener('submit', addCity);
   btnRefresh = document.getElementById('refresh').addEventListener('click', loadAll);
 }
 
@@ -170,20 +170,29 @@ async function loadFavs() {
   }
 }
 
-async function addCity() {
-  let input = document.querySelector('#add_city input');
+async function addCity(event) {
+  event.preventDefault();
+  let input = event.target.children[0];
   let cityName = input.value;
   if (cityName == '') {
     return;
   }
   input.value = '';
   let loader = document.getElementById('loader_fav').content.cloneNode(true);
+  let error = document.getElementById('error_fav').content.cloneNode(true);
   document.querySelector('#favorites ul').append(loader);
   try {
     weather = await getWeatherByName(cityName);
   } catch (err) {
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
+    throw err;
+    return;
+  }
+  if (weather.cod >= 300) {
+    document.querySelector('#favorites ul').replaceChild(error, document.querySelector('#favorites ul li.loader'));
+    alert('Ошибка при загрузке информации');
+    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.error'));
     throw err;
     return;
   }

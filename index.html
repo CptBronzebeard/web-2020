@@ -14,10 +14,10 @@
     </div>
     <div id="favorites_add">
       <h2>Избранное</h2>
-      <div id="add_city">
+      <form id="add_city">
         <input type="input" placeholder="Добавить новый город">
-        <button id="btn_add">+</button>
-      </div>
+        <input type='submit' id="btn_add" value="+"></input>
+      </form>
     </div>
     <div id="favorites">
       <ul>
@@ -61,6 +61,12 @@
 <template id='loader_fav'>
   <li class='loader'>
     Loading...
+  </li>
+</template>
+
+<template id='error_fav'>
+  <li class='error'>
+    Error loading.
   </li>
 </template>
 
