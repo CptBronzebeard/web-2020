@@ -188,14 +188,12 @@ async function addCity(event) {
   } catch (err) {
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
-    throw err;
     return;
   }
   if (weather.cod >= 300) {
     document.querySelector('#favorites ul').replaceChild(error, document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.error'));
-    throw err;
     return;
   }
   if (favCities.includes(weather.name)) {
