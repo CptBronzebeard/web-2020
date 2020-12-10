@@ -1,11 +1,7 @@
-let favCities = [];
-const defCity = 'Vsevolozhsk';
 let posHere;
 
 const pictureUrl = 'http://openweathermap.org/img/wn/'
-const apiKey = '3d57646fde7625f581c36b64bd01dcfe';
-const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&';
-const serverUrl = "http://192.168.0.108:9420"
+const serverUrl = "https://bronzebeard-web2020.azurewebsites.net"
 
 window.onload = function() {
   loadAll();
@@ -20,27 +16,34 @@ function loadAll() {
   return;
 }
 
-async function getUrl(url, method = 'GET') {
-  try {
-        const response = await fetch(url, {
-            method: method,
-            secure: true
-        });
-        let data = await response.json();
-        return data;
-    } catch (error) {
-        return { success: false, message: error };
-    }
+async function queryUrl(url, method = 'GET') {
+  const response = await fetch(url, {
+    method: method,
+    credentials: 'include',
+    secure: true
+  });
+  let data = await response.json();
+  return data;
 }
 
 function getWeatherByName(cityName) {
-  url = serverUrl + '/weather/city?q=' + encodeURI(cityName);
-  return getUrl(url);
+  requestURL = serverUrl + '/weather/city?q=' + encodeURI(cityName);
+  return queryUrl(requestURL);
 }
 
 function getWeatherByCoords(lat, lon) {
   requestURL = serverUrl + "/weather/coords?" + 'lat=' + encodeURI(lat) + '&lon=' + encodeURI(lon);
-  return getUrl(requestURL);
+  return queryUrl(requestURL);
+}
+
+function getFavs() {
+  requestURL = serverUrl + '/favorites'
+  return queryUrl(requestURL)
+}
+
+function addFavCity(cityName) {
+  requestURL = serverUrl + '/favorites/' + encodeURI(cityName)
+  return queryUrl(requestURL, 'POST')
 }
 
 function cityInfoEntries(weather) {
@@ -158,10 +161,12 @@ function removeCity(event) {
 }
 
 async function loadFavs() {
-  if (localStorage.getItem('favList') == null) {
-    return;
+  resp = await getFavs()
+  if (!resp.success) {
+    alert('Ошибка при загрузке информации')
+    return
   }
-  favCities = JSON.parse(localStorage.getItem('favList'));
+  let favCities = resp.cities
   for (let i = 0; i < favCities.length; i++) {
     let loader = document.getElementById('loader_fav').content.cloneNode(true);
     document.querySelector('#favorites ul').append(loader);
@@ -189,27 +194,31 @@ async function addCity(event) {
   let loader = document.getElementById('loader_fav').content.cloneNode(true);
   let error = document.getElementById('error_fav').content.cloneNode(true);
   document.querySelector('#favorites ul').append(loader);
+  let resp;
   try {
-    weather = await getWeatherByName(cityName);
+    resp = await addFavCity(cityName);
   } catch (err) {
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
     throw err;
     return;
   }
+  if (!resp.success) {
+    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
+    alert('Ошибка при загрузке информации');
+    return
+  }
+  if (resp.duplicate) {
+    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
+    alert('Такой город уже есть в списке');
+    return
+  }
+  let weather = resp.weather
   if (weather.cod >= 300) {
     document.querySelector('#favorites ul').replaceChild(error, document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.error'));
-    throw err;
     return;
   }
-  if (favCities.includes(weather.name)) {
-    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
-    alert('Такой город уже есть в списке');
-    return;
-  }
-  favCities.push(weather.name);
-  localStorage.setItem('favList', JSON.stringify(favCities));
-  document.querySelector('#favorites ul').replaceChild(createCityCardFavorite(weather.weather), document.querySelector('#favorites ul li.loader'));
+  document.querySelector('#favorites ul').replaceChild(createCityCardFavorite(weather), document.querySelector('#favorites ul li.loader'));
 }
