@@ -118,10 +118,11 @@ async function loadHereByCoords(position) {
 
 
 async function loadHereDef() {
+  let error = document.getElementById('error_here').content.cloneNode(true);
   try {
     weather = await getWeatherByName(defCity);
   } catch (err) {
-    document.getElementById('weather_here').removeChild(document.querySelector('#weather_here .loader'));
+    document.getElementById('weather_here').replaceChild(error, document.querySelector('#weather_here .loader'));
     alert('Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.');
     throw err;
   }
@@ -150,6 +151,7 @@ function removeCity(event) {
 }
 
 async function loadFavs() {
+  let error = document.getElementById('error_here').content.cloneNode(true);
   if (localStorage.getItem('favList') == null) {
     return;
   }
@@ -162,7 +164,7 @@ async function loadFavs() {
     try {
       weather = await getWeatherByName(cityName);
     } catch (err) {
-      document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
+      document.querySelector('#favorites ul').replaceChild(error, document.querySelector('#favorites ul li.loader'));
       alert('Ошибка при загрузке информации');
       throw err;
     }
