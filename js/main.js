@@ -17,13 +17,20 @@ function loadAll() {
 }
 
 async function queryUrl(url, method = 'GET') {
-  const response = await fetch(url, {
-    method: method,
-    credentials: 'include',
-    secure: true
-  });
-  let data = await response.json();
-  return data;
+  try {
+    const response = await fetch(url, {
+      method: method,
+      credentials: 'include',
+      secure: true
+    });
+    let data = await response.json();
+    return data;
+  } catch (e) {
+    return {
+      success: false,
+      message: e
+    }
+  }
 }
 
 function getWeatherByName(cityName) {
@@ -117,9 +124,8 @@ function createCityCardFavorite(weather) {
 }
 
 async function loadHereByCoords(position) {
-  try {
-    weather = await getWeatherByCoords(position.coords.latitude, position.coords.longitude);
-  } catch (err) {
+  weather = await getWeatherByCoords(position);
+  if (!weather.success) {
     document.getElementById('weather_here').removeChild(document.querySelector('#weather_here .loader'));
     alert('Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.');
     return loadHereDef();
@@ -129,12 +135,11 @@ async function loadHereByCoords(position) {
 
 
 async function loadHereDef() {
-  try {
-    weather = await getWeatherByName(defCity);
-  } catch (err) {
+  weather = await getWeatherByName(defCity);
+  if (!weather.success) {
     document.getElementById('weather_here').removeChild(document.querySelector('#weather_here .loader'));
     alert('Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.');
-    throw err;
+    throw "Error loading def city";
   }
   document.getElementById('weather_here').replaceChild(createCityCardHere(weather.weather), document.querySelector('#weather_here .loader'));
 }
@@ -163,18 +168,17 @@ function removeCity(event) {
 async function loadFavs() {
   resp = await getFavs()
   if (!resp.success) {
-    alert('Ошибка при загрузке информации')
-    return
+    alert('Ошибка при получении списка избранных городов.');
+    throw resp.message;
   }
-  let favCities = resp.cities
+  let favCities = resp.cities;
   for (let i = 0; i < favCities.length; i++) {
     let loader = document.getElementById('loader_fav').content.cloneNode(true);
     document.querySelector('#favorites ul').append(loader);
   }
   for (let cityName of favCities) {
-    try {
-      weather = await getWeatherByName(cityName);
-    } catch (err) {
+    weather = await getWeatherByName(cityName);
+    if (!weather.success) {
       document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
       alert('Ошибка при загрузке информации');
       throw err;
@@ -194,15 +198,7 @@ async function addCity(event) {
   let loader = document.getElementById('loader_fav').content.cloneNode(true);
   let error = document.getElementById('error_fav').content.cloneNode(true);
   document.querySelector('#favorites ul').append(loader);
-  let resp;
-  try {
-    resp = await addFavCity(cityName);
-  } catch (err) {
-    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
-    alert('Ошибка при загрузке информации');
-    throw err;
-    return;
-  }
+  let resp = await addFavCity(cityName);
   if (!resp.success) {
     document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.loader'));
     alert('Ошибка при загрузке информации');
@@ -214,11 +210,5 @@ async function addCity(event) {
     return
   }
   let weather = resp.weather
-  if (weather.cod >= 300) {
-    document.querySelector('#favorites ul').replaceChild(error, document.querySelector('#favorites ul li.loader'));
-    alert('Ошибка при загрузке информации');
-    document.querySelector('#favorites ul').removeChild(document.querySelector('#favorites ul li.error'));
-    return;
-  }
   document.querySelector('#favorites ul').replaceChild(createCityCardFavorite(weather), document.querySelector('#favorites ul li.loader'));
 }
