@@ -1,6 +1,6 @@
 let posHere;
 
-const pictureUrl = "http://openweathermap.org/img/wn/"
+const pictureUrl = "https://openweathermap.org/img/wn/"
 const serverUrl = "https://bronzebeard-web2020.azurewebsites.net"
 
 window.onload = function() {
