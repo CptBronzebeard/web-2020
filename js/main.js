@@ -38,8 +38,8 @@ function getWeatherByName(cityName) {
   return queryUrl(requestURL);
 }
 
-function getWeatherByCoords(lat, lon) {
-  requestURL = serverUrl + "/weather/coords?" + "lat=" + encodeURI(lat) + "&lon=" + encodeURI(lon);
+function getWeatherByCoords(pos) {
+  requestURL = serverUrl + "/weather/coords?" + "lat=" + encodeURI(pos.latitude) + "&lon=" + encodeURI(pos.longtitude);
   return queryUrl(requestURL);
 }
 
