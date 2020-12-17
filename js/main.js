@@ -39,7 +39,7 @@ function getWeatherByName(cityName) {
 }
 
 function getWeatherByCoords(pos) {
-  requestURL = serverUrl + "/weather/coords?" + "lat=" + encodeURI(pos.coords.latitude) + "&lon=" + encodeURI(pos.coords.longtitude);
+  requestURL = serverUrl + "/weather/coords?" + "lat=" + encodeURI(pos.coords.latitude) + "&lon=" + encodeURI(pos.coords.longitude);
   return queryUrl(requestURL);
 }
 
