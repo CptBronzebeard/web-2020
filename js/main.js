@@ -136,7 +136,6 @@ function createCityCardFavorite(weather) {
 async function loadHereByCoords(position) {
   weather = await getWeatherByCoords(position);
   if (!weather.success) {
-    document.getElementById("weather_here").removeChild(document.querySelector("#weather_here .loader"));
     alert("Возникла ошибка при загрузке информации. Пожалуйста, попробуйте снова.");
     return loadHereDef();
   }
