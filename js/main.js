@@ -168,7 +168,10 @@ async function loadHere() {
 async function removeCity(event) {
   let card = event.target.parentNode.parentNode;
   let cityName = card.querySelector("h3").innerHTML;
+  let button = event.target;
+  button.disabled = true;
   let resp = await removeFavCity(cityName);
+  button.disabled = false;
   if (!resp.success) {
     alert("Ошибка при удалении города");
     throw "Error removing city";
